@@ -1673,25 +1673,12 @@ function commerce_paypal_ec_block_configure($delta = '') {
       '#tree' => TRUE,
     );
 
-    // Banner agreement.
-    $form['paypal_ec_banners']['settings']['banner_agreement'] = array(
-      '#type' => 'checkbox',
-      // We are not using l() according to https://drupal.org/node/322774.
-      '#title' => t('I agree to the <a target="_blank" href="@terms_link">PayPal Banner Program Operating Terms</a>.', array('@terms_link' => 'https://financing.paypal.com/ppfinportal/content/operatingAgmt')),
-      '#default_value' => $settings['banner_agreement'],
-    );
-
     // API Email.
     $form['paypal_ec_banners']['settings']['api_email'] = array(
       '#type' => 'textfield',
       '#title' => t('PayPal account e-mail address'),
       '#description' => t('Enter the same e-mail address used in your Express Checkout configuration.'),
       '#default_value' => $settings['api_email'],
-      '#states' => array(
-        'visible' => array(
-          ':input[name$="[banner_agreement]"]' => array('checked' => TRUE),
-        ),
-      ),
     );
 
     $form['paypal_ec_banners']['settings']['banner_size'] = array(
@@ -1723,11 +1710,6 @@ function commerce_paypal_ec_block_configure($delta = '') {
         ),
       ),
       '#default_value' => $settings['banner_size'],
-      '#states' => array(
-        'visible' => array(
-          ':input[name$="[banner_agreement]"]' => array('checked' => TRUE),
-        ),
-      ),
     );
   }
 
@@ -1760,29 +1742,27 @@ function commerce_paypal_ec_block_save($delta = '', $edit = array()) {
       // Clean the entered values.
       $edit['settings'] = array_map('trim', $edit['settings']);
 
-      if ($edit['settings']['banner_agreement'] == TRUE) {
-        /**
-         * Using the staging server is for now unavailable, so we simply default
-         * to using the live key and secret.
-         *
-        if ($edit['settings']['server'] == 'live') {
-          $edit['settings']['api_key'] = PAYPAL_BANNER_API_KEY;
-          $edit['settings']['api_secret'] = PAYPAL_BANNER_API_SECRET;
-        }
-        else {
-          $edit['settings']['api_key'] = PAYPAL_BANNER_API_KEY_STAGING;
-          $edit['settings']['api_secret'] = PAYPAL_BANNER_API_SECRET_STAGING;
-        }
-         */
+      /**
+       * Using the staging server is for now unavailable, so we simply default
+       * to using the live key and secret.
+       *
+      if ($edit['settings']['server'] == 'live') {
         $edit['settings']['api_key'] = PAYPAL_BANNER_API_KEY;
         $edit['settings']['api_secret'] = PAYPAL_BANNER_API_SECRET;
+      }
+      else {
+        $edit['settings']['api_key'] = PAYPAL_BANNER_API_KEY_STAGING;
+        $edit['settings']['api_secret'] = PAYPAL_BANNER_API_SECRET_STAGING;
+      }
+       */
+      $edit['settings']['api_key'] = PAYPAL_BANNER_API_KEY;
+      $edit['settings']['api_secret'] = PAYPAL_BANNER_API_SECRET;
 
-        // Gets the payerId and the publisherId.
-        if (($banner_account = commerce_paypal_ec_request_banner_account($edit['settings']))
-          && (isset($banner_account['payerId']) && isset($banner_account['publisherId']))) {
-          $edit['settings']['payerId'] = $banner_account['payerId'];
-          $edit['settings']['publisherId'] = $banner_account['publisherId'];
-        }
+      // Gets the payerId and the publisherId.
+      if (($banner_account = commerce_paypal_ec_request_banner_account($edit['settings']))
+        && (isset($banner_account['payerId']) && isset($banner_account['publisherId']))) {
+        $edit['settings']['payerId'] = $banner_account['payerId'];
+        $edit['settings']['publisherId'] = $banner_account['publisherId'];
       }
 
       variable_set('commerce_paypal_ec_banners_settings', $edit['settings']);
@@ -1802,7 +1782,7 @@ function commerce_paypal_ec_block_view($delta = '') {
     // Get the PayPal Banners settings.
     $settings = (array) variable_get('commerce_paypal_ec_banners_settings', array()) + commerce_paypal_ec_banners_default_settings();
 
-    if (!empty($settings['banner_agreement']) && !empty($settings['publisherId'])) {
+    if (!empty($settings['publisherId'])) {
       $script = '<script type="text/javascript" data-pp-pubid="' . $settings['publisherId'] . '" data-pp-placementtype="' . $settings['banner_size'] . '">
           (function (d, t) {
             "use strict";

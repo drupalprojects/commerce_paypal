@@ -1723,7 +1723,7 @@ function commerce_paypal_ec_block_configure($delta = '') {
  */
 function commerce_paypal_ec_banners_help_text() {
   return '<p>' . t('Give your sales a boost when you advertise financing!')
-    . '</p><p>' . t('PayPal Credit¹ helps turn browsers into buyers with special financing from PayPal Credit™. Your customers can pay over time, while you get paid up front - at no additional cost to you.')
+    . '</p><p>' . t('PayPal Credit¹ helps turn browsers into buyers with special financing from PayPal Credit. Your customers can pay over time, while you get paid up front - at no additional cost to you.')
     . '</p><p>' . t("Use PayPal Credit's free banners that let you advertise PayPal Credit financing as a payment option when your customers check out with PayPal. When they know they can pay over time for their purchases, shoppers are more likely to make more purchases: 53% of PayPal Credit users say they would not have made all their purchases if PayPal Credit weren't available.²")
     . '</p><p><small>' . t('¹Subject to consumer credit approval.')
     . '</small><br /><small>' . t("²As reported in Nielsen's PayPal Credit Average Order Value study for activity occurring from April 2015 to March 2016 (small merchants) and October 2015 to March 2016 (midsize merchants), which compared PayPal Credit transactions to credit and debit card transactions on websites that offer PayPal Credit as a payment option or within the PayPal Wallet. Nielsen measured 284,890 transactions across 27 mid and small merchants. Copyright Nielsen 2016.")
